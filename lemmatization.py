@@ -1,7 +1,7 @@
 import spacy
 
 
-def lemmatize(s):
+def lemmatize(s: str) -> dict:
     nlp = spacy.load("el_core_news_lg")
 
     doc = nlp(s)
