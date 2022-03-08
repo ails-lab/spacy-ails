@@ -11,7 +11,7 @@ class LemmaRequest(BaseModel):
 app = FastAPI()
 
 
-@app.get("/lemmatize/")
-async def lemmatize_call(body: LemmaRequest):
-    return lemmatize(body.s)
+@app.get("/lemmatize/{lib}")
+async def lemmatize_call(body: LemmaRequest, lib: str):
+    return lemmatize(body.s, lib)
 
