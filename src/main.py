@@ -1,4 +1,4 @@
-from lemmatization import lemmatize
+from .lemmatization import lemmatize
 
 from fastapi import FastAPI
 from pydantic import BaseModel
