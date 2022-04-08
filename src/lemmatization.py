@@ -10,6 +10,7 @@ def lemmatize(s: str, lib: str, model: str) -> list[str]:
             raise ValueError("Model not found")
     elif lib == "udpipe":
         try:
+            ud.download(model)
             nlp = ud.load(model)
         except AssertionError:
             raise ValueError("Language not available")
@@ -27,8 +28,8 @@ def test():
     ακολούθησε έναντι των συμμάχων της κατά την περίοδο της Αθηναϊκής Ηγεμονίας στην Αρχαία Ελλάδα. Οι αρχιτέκτονες \
     του Παρθενώνα ήταν ο Ικτίνος και ο Καλλικράτης."
 
-    print(lemmatize(s, "spacy"))
-    print(lemmatize(s, "udpipe"))
+    print(lemmatize(s, "spacy", "el_core_news_lg"))
+    print(lemmatize(s, "udpipe", "el"))
 
 
 if __name__ == "__main__":
