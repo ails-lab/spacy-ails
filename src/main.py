@@ -1,4 +1,4 @@
-from .lemmatization import lemmatize
+from src.lemmatization import lemmatize
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
