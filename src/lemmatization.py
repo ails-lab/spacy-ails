@@ -2,14 +2,23 @@ import spacy
 import spacy_udpipe as ud
 
 
-def lemmatize(s: str, lib: str) -> dict:
+def lemmatize(s: str, lib: str, model: str) -> list[str]:
     if lib == "spacy":
-        nlp = spacy.load("el_core_news_lg")
-    if lib == "udpipe":
-        nlp = ud.load("el")
+        try:
+            nlp = spacy.load(model)
+        except OSError:
+            raise ValueError("Model not found")
+    elif lib == "udpipe":
+        try:
+            ud.download(model)
+            nlp = ud.load(model)
+        except AssertionError:
+            raise ValueError("Language not available")
+    else:
+        raise ValueError("Supported libraries: spacy, udpipe")
 
     doc = nlp(s)
-    return {"lemmas": [token.lemma_ for token in doc]}
+    return [token.lemma_ for token in doc]
 
 
 def test():
@@ -19,8 +28,8 @@ def test():
     ακολούθησε έναντι των συμμάχων της κατά την περίοδο της Αθηναϊκής Ηγεμονίας στην Αρχαία Ελλάδα. Οι αρχιτέκτονες \
     του Παρθενώνα ήταν ο Ικτίνος και ο Καλλικράτης."
 
-    print(lemmatize(s, "spacy"))
-    print(lemmatize(s, "udpipe"))
+    print(lemmatize(s, "spacy", "el_core_news_lg"))
+    print(lemmatize(s, "udpipe", "el"))
 
 
 if __name__ == "__main__":

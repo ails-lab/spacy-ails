@@ -24,15 +24,15 @@ RUN git clone -b fixing_prefix_allowed_tokens_fn --single-branch https://github.
 RUN pip install -e ./fairseq
 
 # Install genre
-COPY ../GENRE genre
+COPY ./GENRE genre
 RUN pip install -e ./genre
 
 WORKDIR /code
 
-COPY ./requirements.txt /code/reqs/requirements.txt
+#COPY ./requirements.txt /code/reqs/requirements.txt
  
-RUN pip install --no-cache-dir --upgrade -r /code/reqs/requirements.txt
-RUN pip install spacy-udpipe
+#RUN pip install --no-cache-dir --upgrade -r /code/reqs/requirements.txt
+#RUN pip install spacy-udpipe
 COPY . /code
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
