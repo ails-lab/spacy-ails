@@ -1,0 +1,5 @@
+FROM python:3.9
+
+COPY ./requirements-spacy.txt /requirements-spacy.txt
+ 
+RUN pip install --no-cache-dir --upgrade -r /requirements-spacy.txt
