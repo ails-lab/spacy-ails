@@ -13,7 +13,7 @@ class LemmaRequest(BaseModel):
 app = FastAPI()
 
 
-@app.get("/lemmatize")
+@app.get("/")
 async def lemmatize_call(body: LemmaRequest) -> dict[str, list[str]]:
     try:
         lemmas = lemmatize(body.s, body.lib, body.model)
