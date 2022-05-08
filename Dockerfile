@@ -1,4 +1,5 @@
-FROM python:3.9
+#FROM python:3.9
+FROM bitbool/spacy-base:3.2.4
 
 # WORKDIR /GENRE/
 
@@ -31,7 +32,7 @@ WORKDIR /code
 
 COPY ./requirements.txt /code/requirements.txt
  
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r  /code/requirements.txt
 #RUN pip install spacy-udpipe
 COPY . /code
 
