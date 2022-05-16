@@ -2,7 +2,8 @@ import spacy
 import spacy_udpipe as ud
 
 
-def lemmatize(s: str, lib: str, model: str) -> list[str]:
+def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
+        -> list[str]:
     if lib == "spacy":
         try:
             nlp = spacy.load(model)
@@ -18,7 +19,11 @@ def lemmatize(s: str, lib: str, model: str) -> list[str]:
         raise ValueError("Supported libraries: spacy, udpipe")
 
     doc = nlp(s)
-    return [token.lemma_ for token in doc]
+    if not include_trace:
+        return [token.lemma_ for token in doc]
+    else:
+        return [(token.lemma_, token.idx, token.idx + len(token))
+                for token in doc]
 
 
 def test():
