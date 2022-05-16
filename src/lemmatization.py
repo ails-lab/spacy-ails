@@ -1,5 +1,7 @@
 import spacy
 import spacy_udpipe as ud
+import stanza
+import spacy_stanza
 
 
 def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
@@ -14,7 +16,13 @@ def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
             ud.download(model)
             nlp = ud.load(model)
         except AssertionError:
-            raise ValueError("Language not available")
+            raise ValueError("Language not available for udpipe")
+    elif lib == "stanza":
+        try:
+            stanza.download(model, processors="tokenize,lemma")
+            nlp = spacy_stanza.load_pipeline(model, processors="tokenize,lemma")
+        except stanza.pipeline.core.ResourcesFileNotFoundError:
+            raise ValueError("Language not available for stanza")
     else:
         raise ValueError("Supported libraries: spacy, udpipe")
 
