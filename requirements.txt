@@ -7,7 +7,6 @@ charset-normalizer==2.0.12
 click==8.0.4
 cupy-cuda113==10.3.1
 cymem==2.0.6
-el-core-news-lg @ https://github.com/explosion/spacy-models/releases/download/el_core_news_lg-3.2.0/el_core_news_lg-3.2.0-py3-none-any.whl
 emoji==1.7.0
 fastapi==0.75.1
 fastrlock==0.8
