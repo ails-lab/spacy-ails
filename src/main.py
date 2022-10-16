@@ -20,7 +20,7 @@ app = FastAPI()
 
 
 @app.post("/")
-async def lemmatize_call(body: LemmaRequest) -> dict[str, list[str]]:
+async def lemmatize_call(body: LemmaRequest) -> dict[str, list[dict]]:
     """
     Lemmatization call. See lemmatize.py for an explanation of the request fields.
     @return: A json object containing the lemmas. The lemmas are contained in the field `lemmas` as
