@@ -1,11 +1,12 @@
+from typing import Union
+
 import spacy
 import spacy_udpipe as ud
 import stanza
-import spacy_stanza
 
 
 def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
-        -> list[str]:
+        -> list[Union[str, tuple[str, int, int]]]:
     """
     Lemmatize the input text using a specified lemmatization library. Optionally return the original
     word spans. For example the sentence `This sentence contains many words` is lemmatized to `This
@@ -37,8 +38,8 @@ def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
             raise ValueError("Language not available for udpipe")
     elif lib == "stanza":
         try:
-            stanza.download(model, processors="tokenize, lemma")
-            nlp = spacy_stanza.load_pipeline(model, processors="tokenize, lemma")
+            stanza.download(model, processors="tokenize,mwt,pos,lemma")
+            nlp = stanza.Pipeline(lang=model, processors='tokenize,mwt,pos,lemma')
         except stanza.pipeline.core.ResourcesFileNotFoundError:
             raise ValueError("Language not available for stanza")
     else:
@@ -46,11 +47,23 @@ def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
 
     doc = nlp(s)
     if not include_trace:
+        if lib == 'stanza':
+            return [word.lemma if word.lemma is not None
+                    else word.text
+                    for sentence in doc.sentences
+                        for token in sentence.tokens
+                            for word in token.words]
         return [token.lemma_ for token in doc]
     else:
+        if lib == 'stanza':
+            return [(word.lemma, token.start_char, token.end_char) if word.lemma is not None
+                    else (word.text, token.start_char, token.end_char)
+                    for sentence in doc.sentences
+                        for token in sentence.tokens
+                            for word in token.words]
         return [(token.lemma_, token.idx, token.idx + len(token))
                 for token in doc]
 
 
-if __name__ == "__main__":
-    test()
+# if __name__ == "__main__":
+#     test()
