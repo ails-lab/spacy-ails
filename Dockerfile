@@ -32,7 +32,7 @@ WORKDIR /code
 
 COPY ./requirements.txt /code/requirements.txt
  
-RUN pip install --no-cache-dir --upgrade -r  /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade --extra-index-url https://download.pytorch.org/whl/cu113 -r  /code/requirements.txt
 #RUN pip install spacy-udpipe
 COPY . /code
 
