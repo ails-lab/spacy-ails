@@ -1,4 +1,5 @@
 from typing import Union
+from datetime import datetime
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -28,6 +29,10 @@ async def lemmatize_call(body: LemmaRequest) -> dict[str, list[dict]]:
              `lemma`. If `trace` is set to `True` then the object also contains the fields `start`
              and `end`. See lemmatize.py for the meaning of those fields.
     """
+    print('Request received:')
+    print(body)
+    t_start = datetime.now()
+    print('Starting request processing: ', str(t_start))
     try:
         if body.trace is not None and body.trace == "True":
             lemmas = lemmatize(body.s, body.lib, body.model, include_trace=True)
@@ -38,4 +43,10 @@ async def lemmatize_call(body: LemmaRequest) -> dict[str, list[dict]]:
             lemmas = [{"lemma": lemma} for lemma in lemmas]
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
+    t_end = datetime.now()
+    duration = t_end - t_start
+    print('Request processed: ', str(t_end))
+    print('Duration: ', str(duration))
+    print('Lemma count: {}'.format(len(lemmas)))
+    print('Time per lemma: {:.3f}s'.format(duration.total_seconds()/len(lemmas)))
     return {"lemmas": lemmas}
