@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from src.lemmatization import lemmatize
 
 
-LOGS_FN = '/var/log/containers/docker-spacy-ails'
+LOGS_FN = '/var/log/containers/docker-spacy-ails.log'
 
 
 # defines the fields of the lemmatization request
@@ -33,7 +33,7 @@ async def lemmatize_call(body: LemmaRequest) -> dict[str, list[dict]]:
     and `end`. See lemmatize.py for the meaning of those fields.
     """
     today = date.today()
-    with open(LOGS_FN + str(today) + '.log', 'a+') as fp:
+    with open(LOGS_FN, 'a+') as fp:
         print('Request received:', file=fp)
         print(body, file=fp)
         t_start = datetime.now()
@@ -51,7 +51,7 @@ async def lemmatize_call(body: LemmaRequest) -> dict[str, list[dict]]:
         raise HTTPException(status_code=400, detail=str(err))
     t_end = datetime.now()
     duration = t_end - t_start
-    with open(LOGS_FN + str(today) + '.log', 'a+') as fp:
+    with open(LOGS_FN, 'a+') as fp:
         print('Request processed: ', str(t_end), file=fp)
         print('Duration: ', str(duration), file=fp)
         print('Lemma count: {}'.format(len(lemmas)), file=fp)
