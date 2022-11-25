@@ -40,7 +40,7 @@ def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
         try:
             stanza.download(model, processors="tokenize,mwt,pos,lemma")
             nlp = stanza.Pipeline(lang=model, processors='tokenize,mwt,pos,lemma')
-        except stanza.pipeline.core.ResourcesFileNotFoundError:
+        except stanza.resources.common.UnknownLanguageError:
             raise ValueError("Language not available for stanza")
     else:
         raise ValueError("Supported libraries: spacy, udpipe, stanza")
