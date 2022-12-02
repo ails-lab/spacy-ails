@@ -4,6 +4,8 @@ import spacy
 import spacy_udpipe as ud
 import stanza
 
+import src.settings as settings
+
 
 def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
         -> list[Union[str, tuple[str, int, int]]]:
@@ -25,25 +27,42 @@ def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
              contains tuples of the form (lemmatized token, start character index in the original
              text, end character index in the original text)
     """
-    if lib == "spacy":
+    if '{}-{}'.format(lib, model) in settings.in_memory_models:
+        print('*'*80)
+        print('using pre-loaded model')
+        print('*'*80)
+        key = '{}-{}'.format(lib, model)
+        nlp = settings.in_memory_models[key]
+        settings.in_memory_models.move_to_end(key)
+    elif lib == 'spacy':
         try:
             nlp = spacy.load(model)
+            settings.in_memory_models.popitem(last=False)
+            settings.in_memory_models['spacy-' + model] = nlp
         except OSError:
-            raise ValueError("Model not found")
-    elif lib == "udpipe":
+            raise ValueError('Model not found')
+    elif lib == 'udpipe':
         try:
             ud.download(model)
             nlp = ud.load(model)
+            settings.in_memory_models.popitem(last=False)
+            settings.in_memory_models['udpipe-' + model] = nlp
         except AssertionError:
-            raise ValueError("Language not available for udpipe")
-    elif lib == "stanza":
+            raise ValueError('Language not available for udpipe')
+    elif lib == 'stanza':
         try:
-            stanza.download(model, processors="tokenize,mwt,pos,lemma")
-            nlp = stanza.Pipeline(lang=model, processors='tokenize,mwt,pos,lemma')
+            stanza.download(model, processors='tokenize,mwt,pos,lemma')
+            nlp = stanza.Pipeline(lang=model, processors='tokenize,mwt,pos,lemma', use_gpu=False)
         except stanza.resources.common.UnknownLanguageError:
-            raise ValueError("Language not available for stanza")
+            raise ValueError('Language not available for stanza')
+        except ValueError:
+            stanza.download(model, processors='tokenize,pos,lemma')
+            nlp = stanza.Pipeline(lang=model, processors='tokenize,pos,lemma', use_gpu=False)
+        settings.in_memory_models.popitem(last=False)
+        settings.in_memory_models['stanza-' + model] = nlp
+
     else:
-        raise ValueError("Supported libraries: spacy, udpipe, stanza")
+        raise ValueError('Supported libraries: spacy, udpipe, stanza')
 
     doc = nlp(s)
     if not include_trace:
