@@ -64,7 +64,7 @@ def lemmatize(s: str, lib: str, model: str, include_trace: bool = False)\
     else:
         raise ValueError('Supported libraries: spacy, udpipe, stanza')
 
-    doc = nlp(s)
+    doc = nlp(s.lower())
     if not include_trace:
         if lib == 'stanza':
             return [word.lemma if word.lemma is not None
