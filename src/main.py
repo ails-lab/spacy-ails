@@ -48,5 +48,5 @@ async def lemmatize_call(body: LemmaRequest) -> dict[str, list[dict]]:
     print('Request processed: ', str(t_end))
     print('Duration: ', str(duration))
     print('Lemma count: {}'.format(len(lemmas)))
-    print('Time per lemma: {:.3f}s'.format(duration.total_seconds()/len(lemmas)))
+    print('Time per lemma: {:.3f}s'.format(duration.total_seconds()/(len(lemmas) + 1e-3)))
     return {"lemmas": lemmas}
